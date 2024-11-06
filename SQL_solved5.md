@@ -1,0 +1,25 @@
+# 틀린 코드 이유 분석
+틀린 코드
+```
+SELECT *
+FROM (SELECT FOOD_TYPE, REST_ID, REST_NAME, MAX(FAVORITES) AS FAVORITES
+FROM REST_INFO
+GROUP BY FOOD_TYPE
+ORDER BY FOOD_TYPE DESC
+```
+틀린 이유: GROUP BY는 MAX함수까지 커버해줄 수 없기 때문이다. 최빈값이 아닌, 최상단의 값을 그냥 출력한다. 따라서 서브쿼리를 사용해서 해줘야 함.
+
+정답 코드
+```
+SELECT FOOD_TYPE, REST_ID, REST_NAME, FAVORITES
+FROM REST_INFO
+WHERE (FOOD_TYPE, FAVORITES) IN (
+    SELECT FOOD_TYPE, MAX(FAVORITES)    
+    FROM REST_INFO
+    GROUP BY FOOD_TYPE
+) 
+ORDER BY FOOD_TYPE DESC;
+```
+
+
+# 개선된 쿼리 학습
