@@ -33,4 +33,28 @@ ORDER BY FOOD_TYPE DESC
 ```
 ![img](image_w5/5-2.png)
 주요 사용 문법: 서브쿼리
+
+
 # [WINDOW] 조건에 맞는 사원 정보 조회하기
+HR_DEPARTMENT, HR_EMPLOYEES, HR_GRADE 테이블에서 2022년도 한해 평가 점수가 가장 높은 사원 정보를 조회하려 합니다. 2022년도 평가 점수가 가장 높은 사원들의 점수, 사번, 성명, 직책, 이메일을 조회하는 SQL문을 작성해야하는 문제. 
+
+나는 세 테이블을 먼저 조인해주고, group by를 해준 후 평가 점수는 HR_GRADE 테이블에서 확인할 수 있으므로 거기서 제일 평가 점수가 높은 사원을 출력해주기 위해 limit와 order by desc 를 사용해주었다.
+
+여기서 주의해야할 점은 평가점수가 상 하반기 점수의 합을 의미하므로, select에 sum을 사용해주어야 하고, group by는 일반적으로 집계함수와 함께 쓰이므로 항상 주의해야 함!
+
+### 최종 정답 코드
+```
+SELECT SUM(GRADE.SCORE) AS SCORE,
+       EMP.EMP_NO,
+       EMP.EMP_NAME,
+       EMP.POSITION,
+       EMP.EMAIL
+FROM HR_DEPARTMENT AS DEPT
+INNER JOIN HR_EMPLOYEES AS EMP ON DEPT.DEPT_ID = EMP.DEPT_ID
+INNER JOIN HR_GRADE AS GRADE ON EMP.EMP_NO = GRADE.EMP_NO
+GROUP BY EMP.EMP_NO
+ORDER BY SCORE DESC
+LIMIT 1
+```
+![img](image_w5/5-3.png)
+주요 사용문법: sum, join, group by, order by, limit
