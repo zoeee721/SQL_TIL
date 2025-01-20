@@ -46,7 +46,7 @@ ON O.order_id = OI.order_id
 GROUP BY 1
 ORDER BY 1
 ```
-![img](
+![img](/image_w8/1answer.png)
 
 ### 함수 및 문법 정리
 
@@ -163,7 +163,7 @@ group by order_date
 having count(DISTINCT order_id) >= 10 and furniture_pct >= 40
 order by 3 DESC, 1 ASC
 ```
-![img](/image_w8/2answer.png))
+![img](/image_w8/2answer.png)
 
 ### 함수 및 문법 정리
 
