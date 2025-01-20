@@ -46,7 +46,7 @@ ON O.order_id = OI.order_id
 GROUP BY 1
 ORDER BY 1
 ```
-![img](/image_w8/1answer.png)
+![img](
 
 ### 함수 및 문법 정리
 
@@ -127,19 +127,52 @@ US E-Commerce Records 2020 데이터셋은 미국 이커머스 웹사이트의 �
 ### [ 문제 풀이를 위해 생각해볼 것들 ]
 1. 일별 주문 수가 10개 이상인 날 중에서, ‘Furniture’ 카테고리 주문의 비율이 40% 이상 이었던 날만 출력하는 조건
    ```
-
+    처음에는 이거를 select 문에서 바로 어떻게 할 수 없을까 생각했는데, 안 될 것 같고.. having 조건절을 걸어서 해줘야했음.
+    where 조건절은 집계함수 같은 것을 쓸 수 없기에 안 됨!
    ```
 
 
-2. 뭘까용용
+2. distinct order_id ? 고유 주문수 계산하기.
    ```
+    DISTINCT가 필요한 이유
+    -> 주문 데이터의 중복 가능성
 
+    문제에서 설명된 데이터셋은 주문별 상세 정보를 담고 있음.
+
+    일반적으로 "상세 정보"란 주문 번호(order_id)에 대해 여러 줄로 나뉘어 있을 가능성이 크다.
+
+    예: 한 주문(order_id)이 여러 항목으로 나뉘는 경우:
+
+    order_id	order_date	    category
+    1	        2020-11-19	    Furniture
+    1	        2020-11-19	    Office
+    2	        2020-11-19	    Furniture
+    3	        2020-11-19	    Technology
+
+    위 데이터에서는 order_id = 1이 두 번 나타나지만, 실제로는 하나의 주문임.
+    → 중복된 order_id를 제거하지 않으면 주문 수가 잘못 계산된다.
    ```
 
 ### 최종 정답 코드
 ```SQL
-
+SELECT order_date, 
+  count(DISTINCT case when category = 'Furniture' then order_id ELSE NULL END) as furniture, 
+  round(count(DISTINCT case when category ='Furniture' then order_id ELSE NULL END) *100.0 /count(DISTINCT order_id), 2) as furniture_pct
+from records
+group by order_date
+having count(DISTINCT order_id) >= 10 and furniture_pct >= 40
+order by 3 DESC, 1 ASC
 ```
-![img]
+![img](/image_w8/2answer.png))
 
 ### 함수 및 문법 정리
+
+#### round 함수 사용할 때 유의할 점
+```SQL
+- sqlLite는 나눴을 때, 정수부만 나온다.
+따라서 임의로 실수형이 나오도록 해줘야 하는데 이의 해결법은 다음처럼 float형으로 만들어서 진행해주면 된다.
+- round(order_id, 2)이면 소수점 둘째자리 까지 출력됨.
+
+ex. round(count(DISTINCT case when category ='Furniture' then order_id ELSE NULL END) *100.0 /count(DISTINCT order_id), 2) as furniture_pct
+
+```
