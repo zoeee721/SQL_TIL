@@ -117,10 +117,26 @@ FROM sum_sales
 - LIKE: 특정 단어를 포함 하기만 하면 돼서 '%apple%' 등의 형식으로 사용 가능함.
 
     여러 단어 중 하나를 포함하는 값을 찾고 싶을 때, LIKE에 OR 조건을 사용하고싶다면, OR 다음에 LIKE를 다시 써주어야 함.
-
+    ```SQL
     ex. WHERE name LIKE '%Christmas%' OR name LIKE '%Santa%'
+    ```
 
 ## 문자열 출력
 다른 언어의 print문 처럼 단순히 문자열을 출력하고 싶을 때, 단순하게 select 다음에 '문자열'을 해주면 끝!
-
+```SQL
 ex. SELECT 'Merry Christmas!'
+```
+
+## 언더스코어(_) 처리
+➡️ 문자열 탐색
+
+LIKE를 통한 문자열 탐색에서 _는 "한 문자"를 나타내는 와일드카드이고,
+%는 "문자열"을 나타내는 와일드카드이다.
+
+따라서, 와일드카드인 언더스코어 포함 여부를 탐색하기 위해서는 이스케이프 처리가 필요하다.
+
+SQLite에서는 찾고자하는 패턴에 \를 통해 이스케이프 처리를 한 뒤
+뒤에 ESCAPE '\'를 붙여줘야 제대로 작동한다고 한다.
+```SQL
+ex. WHERE page_location NOT LIKE '%\_%' ESCAPE '\'
+```
